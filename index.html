@@ -437,11 +437,39 @@
             z-index: 1;
             overflow: hidden;
         }
+        
+        /* Music player */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 123, 229, 0.2);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 123, 229, 0.3);
+        }
+        
+        .music-control i {
+            font-size: 24px;
+            color: #ff7be5;
+        }
     </style>
 </head>
 <body>
     <div class="stars" id="stars"></div>
     <div class="particles" id="particles"></div>
+    
+    <!-- Music control -->
+    <div class="music-control" id="music-control">
+        <i class="fas fa-volume-up"></i>
+    </div>
     
     <!-- Welcome Page -->
     <div class="container" id="welcome-page">
@@ -525,7 +553,7 @@
 </p>
             <p>I don’t even know where to begin, because no matter what I write, it won’t be enough to capture how much you mean. But still, I want you to know this—</p>
             <p>you are the kind of person who makes ordinary moments unforgettable. Even the simplest things—your smile, the way you talk, the way you make people laugh—somehow carry a light that can brighten up anyone’s day.</p>
-            <p>Sometimes I wonder if you even realize how amazing you truly are. You’re not just “someone,” you’re the kind of person who leaves a mark on others without even trying.</p>
+            <p>Sometimes I wonder if you even realize how amazing you truly are. You’re not just "someone," you’re the kind of person who leaves a mark on others without even trying.</p>
             <p>You inspire me to be better, to dream bigger, and to never give up. And honestly, having someone like you in my life is one of the best things that could have ever happened to me.</p>
             <p>I hope this birthday brings you happiness that lasts the whole year, laughter that echoes for days, and memories that stay with you forever. I hope every wish you make comes true, because you truly deserve it all.</p>
             <p>Thank you—for being you. For existing. For making life a little more special.</p>
@@ -534,7 +562,7 @@
             <p>With all my love,</p>
             <p>Rudra ❤️</p>
         </div>
-        <button class="btn btn-yes" id="thank-you-btn"><i class="fas fa-heart"></i> Thnx</button>
+        <!-- Thnx button has been removed as requested -->
         <p> </p>
         <p>I Am Really Surprised And Impressed That You came This Far , Thxn Soo Muchhh 💕 ... May This Birthday Be Your Best Birthday Ever . Keep Amiling And Enjoy Your day </p>
     </div>
@@ -586,7 +614,6 @@
         const effortNoBtn = document.getElementById('effort-no');
         const giftYesBtn = document.getElementById('gift-yes');
         const giftNoBtn = document.getElementById('gift-no');
-        const thankYouBtn = document.getElementById('thank-you-btn');
         const brokenHeartBackBtn = document.getElementById('broken-heart-back');
         const closeGoodgirlBtn = document.getElementById('close-goodgirl');
         const giftTimeBtn = document.getElementById('gift-time-btn');
@@ -601,11 +628,45 @@
         const starsContainer = document.getElementById('stars');
         const particlesContainer = document.getElementById('particles');
         const heartContainer = document.getElementById('heart-container');
+        const musicControl = document.getElementById('music-control');
         
         // Variables
         let noClickCount = 0;
         let cakeClickCount = 0;
         let heartInterval;
+        let backgroundMusic;
+        let isMusicPlaying = false;
+        
+        // Initialize background music
+        function initMusic() {
+            backgroundMusic = new Audio('YOUR_MUSIC_LINK_HERE');
+            backgroundMusic.volume = 0.6; // Set volume to 60%
+            backgroundMusic.loop = true;
+            
+            // Try to play music automatically when page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                backgroundMusic.play().then(() => {
+                    isMusicPlaying = true;
+                    musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
+                }).catch(error => {
+                    console.log("Autoplay prevented:", error);
+                    isMusicPlaying = false;
+                    musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                });
+            });
+            
+            // Music control button
+            musicControl.addEventListener('click', function() {
+                if (isMusicPlaying) {
+                    backgroundMusic.pause();
+                    musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                } else {
+                    backgroundMusic.play();
+                    musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
+                }
+                isMusicPlaying = !isMusicPlaying;
+            });
+        }
         
         // Create background elements
         function createBackgroundElements() {
@@ -837,14 +898,6 @@
         closeGoodgirlBtn.addEventListener('click', () => {
             goodgirlPopup.classList.add('hidden');
             showPage(cakePage);
-            
-            // Play birthday music (replace with your actual music link)
-            try {
-                const audio = new Audio('assets/music.mp3');
-                audio.play();
-            } catch (e) {
-                console.log("Audio playback error:", e);
-            }
         });
         
         cakePage.addEventListener('click', (e) => {
@@ -862,23 +915,14 @@
         giftTimeBtn.addEventListener('click', () => {
             butterscotchPopup.classList.add('hidden');
             showPage(giftPage);
-            
-            // Play your music (replace with your actual music link)
-            try {
-                const audio = new Audio('YOUR_MUSIC_LINK_HERE');
-                audio.play();
-            } catch (e) {
-                console.log("Audio playback error:", e);
-            }
         });
-        
-       
         
         brokenHeartBackBtn.addEventListener('click', () => {
             showPage(giftChoicePage);
         });
         
         // Initialize
+        initMusic();
         createBackgroundElements();
         createStars();
         
